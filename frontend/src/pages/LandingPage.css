@@ -1,0 +1,247 @@
+/* landing-page specific variables */
+.landing-wrapper {
+  --lp-bg-color: #ffffff;
+  --lp-text-color: #9fbbac;
+  --lp-glass-bg: rgba(240, 103, 76, 0.39);
+  --lp-glass-border: rgba(255, 255, 255, 0.34);
+}
+
+.landing-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--lp-bg-color);
+  font-family: "Outfit", sans-serif;
+  color: var(--lp-text-color);
+  z-index: 9999; /* Cover the navbar and everything else */
+}
+
+.landing-wrapper #scene-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.landing-wrapper .color-body {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  cursor: grab;
+  user-select: none;
+  will-change: transform;
+  pointer-events: auto;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: box-shadow 0.1s;
+  filter: brightness(0.95);
+}
+
+.landing-wrapper .color-body:active {
+  cursor: grabbing;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  transform: scale(1.05);
+}
+
+.landing-wrapper .ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(49, 36, 67, 0.644) 100%);
+}
+
+.landing-wrapper h1 {
+  font-size: 5.265rem;
+  font-weight: 950;
+  margin: 0;
+  display: flex;
+  gap: 2px;
+  perspective: 1000px;
+}
+
+.landing-wrapper .welcome-text {
+  background: linear-gradient(135deg, #2b0202 0%, #f3f2f2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 15px;
+}
+
+.landing-wrapper .flip-char {
+  display: inline-block;
+  transform-style: preserve-3d;
+  animation: flip-3d-once 2.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  position: relative;
+}
+
+.landing-wrapper .flip-char:nth-child(2) { animation-delay: 0.8s; }
+.landing-wrapper .flip-char:nth-child(3) { animation-delay: 1.0s; }
+.landing-wrapper .flip-char:nth-child(4) { animation-delay: 1.2s; }
+.landing-wrapper .flip-char:nth-child(5) { animation-delay: 1.4s; }
+
+@keyframes flip-3d-once {
+  0% { transform: rotateX(0deg); }
+  100% { transform: rotateX(180deg); }
+}
+
+.landing-wrapper .letter-w,
+.landing-wrapper .letter-m {
+  backface-visibility: hidden;
+  background: linear-gradient(135deg, #2b0202 0%, #f3f2f2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+.landing-wrapper .letter-m {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateX(180deg);
+}
+
+.landing-wrapper .const-letter {
+  background: linear-gradient(135deg, #2b0202 0%, #f3f2f2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(2px 2px 0px #270101);
+}
+
+.landing-wrapper p.subtitle {
+  font-size: 1.65rem;
+  opacity: 0.7;
+  margin-top: 1.5rem;
+  max-width: 600px;
+  color: #2b0202;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.landing-wrapper .controls {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  pointer-events: auto;
+}
+
+.landing-wrapper button.landing-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #2b0202;
+  padding: 0.7rem 1.4rem;
+  border-radius: 14px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.landing-wrapper button.landing-btn:hover {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: translateY(-2px) scale(1.05);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+
+.landing-wrapper canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: auto;
+  z-index: 5;
+}
+
+/* Exit Animation */
+@keyframes vibrate-fall-1 {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  5% { transform: translate(-15px, 5px) rotate(-3deg); }
+  15% { transform: translate(5px, -15px) rotate(2deg); }
+  25% { transform: translate(-10px, 10px) rotate(-2deg); }
+  35% { transform: translate(15px, -5px) rotate(3deg); }
+  45% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translateY(150vh) rotate(15deg); opacity: 0; }
+}
+
+@keyframes vibrate-fall-2 {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  5% { transform: translate(10px, -10px) rotate(2deg); }
+  15% { transform: translate(-15px, 5px) rotate(-3deg); }
+  25% { transform: translate(5px, -15px) rotate(3deg); }
+  35% { transform: translate(-10px, 10px) rotate(-1deg); }
+  45% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translateY(150vh) rotate(-20deg); opacity: 0; }
+}
+
+@keyframes vibrate-fall-3 {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  5% { transform: translate(-5px, 15px) rotate(-1deg); }
+  15% { transform: translate(15px, -5px) rotate(2deg); }
+  25% { transform: translate(-15px, -10px) rotate(-3deg); }
+  35% { transform: translate(10px, 15px) rotate(1deg); }
+  45% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translateY(150vh) rotate(10deg); opacity: 0; }
+}
+
+.landing-wrapper.landing-exit {
+  pointer-events: none; /* Disable interactions while falling */
+}
+
+.landing-wrapper.landing-exit h1 {
+  animation: vibrate-fall-1 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+}
+
+.landing-wrapper.landing-exit p.subtitle {
+  animation: vibrate-fall-2 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+}
+
+.landing-wrapper.landing-exit button.landing-btn:nth-child(1) {
+  animation: vibrate-fall-3 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+}
+
+.landing-wrapper.landing-exit button.landing-btn:nth-child(2) {
+  animation: vibrate-fall-1 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+}
+
+.landing-wrapper.landing-exit button.landing-btn:nth-child(3) {
+  animation: vibrate-fall-2 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+}
+
+.landing-wrapper.landing-exit #scene-container,
+.landing-wrapper.landing-exit canvas {
+  animation: vibrate-fall-3 1.5s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+}

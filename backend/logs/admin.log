@@ -1,0 +1,10 @@
+2026-04-25T06:49:35.661917+00:00 testadmin action=create_product target_id=21 diff={"name": "Admin Test Product", "category": "Test", "brand": "AdminBrand", "price": 19.99, "description": "Test description", "stock": 100}
+2026-04-25T06:49:35.709264+00:00 testadmin action=update_product target_id=21 diff={"price": 29.99}
+2026-04-25T06:49:35.721676+00:00 testadmin action=delete_product target_id=21 diff={"deleted": true}
+2026-04-25T06:49:35.744657+00:00 testadmin action=restore_product target_id=21 diff={"restored": true}
+2026-04-25T06:50:11.057695+00:00 testadmin action=create_product target_id=21 diff={"name": "Admin Test Product", "category": "Test", "brand": "AdminBrand", "price": 19.99, "description": "Test description", "stock": 100}
+2026-04-25T06:50:11.071903+00:00 testadmin action=update_product target_id=21 diff={"price": 29.99}
+2026-04-25T06:50:11.084610+00:00 testadmin action=delete_product target_id=21 diff={"deleted": true}
+2026-04-25T06:50:11.105744+00:00 testadmin action=restore_product target_id=21 diff={"restored": true}
+2026-04-25T06:50:11.144091+00:00 testadmin action=simulate target_id=1 diff={"ratings": 1, "orders": 1}
+2026-05-08T15:18:21.239543+00:00 rania_nasser_1 action=simulate target_id=10 diff={"ratings": 1, "orders": 1}
