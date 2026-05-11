@@ -1,6 +1,30 @@
 # E-Commerce Platform Setup Guide
 
-Welcome to the project! This guide will help you get the entire application (both the React Frontend and the Python Backend) running perfectly on your local machine.
+Welcome to the project! This is a high-end E-commerce platform powered by a sophisticated, custom-built hybrid recommendation engine.
+
+---
+
+## ✨ Key Features
+
+- **Personalized Discovery**: A dynamic home feed that adapts to your behavior using 6 different algorithms.
+- **Advanced Gift Finder**: A multi-step wizard that uses knowledge-based filtering to find the perfect gift.
+- **Admin Command Center**: Complete dashboard for managing products and analyzing recommendation accuracy.
+- **Scientific Evaluation**: Real-time computation of Precision, Recall, NDCG, and RMSE metrics.
+- **Interactive 3D UI**: Modern, premium landing page with 3D flipping animations and smooth transitions.
+- **Full Shopping Flow**: Secure authentication, product management, favorites, cart, and order tracking.
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Recharts (for analytics).
+- **Backend**: Python 3.10+, FastAPI, SQLAlchemy (ORM).
+- **Database**: SQLite (SQL-based persistence).
+- **Machine Learning**: Scikit-learn (TF-IDF, SVD, KNN), NumPy, SciPy.
+
+---
+
+## 🚀 Setup Guide
+
+This guide will help you get the entire application (both the React Frontend and the Python Backend) running perfectly on your local machine.
 
 ## Prerequisites
 Before you start, you need to have the following installed on your computer:
