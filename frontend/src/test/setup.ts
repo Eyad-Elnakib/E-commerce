@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { server } from './mocks/server'
 import { beforeAll, afterEach, afterAll, expect } from 'vitest'
+// @ts-ignore
 import { toHaveNoViolations } from 'jest-axe'
 
 expect.extend(toHaveNoViolations)

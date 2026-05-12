@@ -52,9 +52,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     track('click', product.id)
   }
 
-  const toggleFlip = () => {
-    setFlipped(!flipped)
-  }
 
   const handleFavouriteClick = async (e: React.MouseEvent) => {
     e.preventDefault()
