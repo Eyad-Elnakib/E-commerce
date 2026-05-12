@@ -4,8 +4,7 @@ __pycache__/
 *$py.class
 venv/
 .env
-*.db
-backend/app.db
+test_feed.py
 
 # Node
 node_modules/
