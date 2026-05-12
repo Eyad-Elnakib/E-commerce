@@ -121,12 +121,14 @@ describe('ProductCard 3D Flip', () => {
     
     // Unflipped
     let results = await axe(container)
+    // @ts-ignore
     expect(results).toHaveNoViolations()
     
     // Flipped
     const btn = screen.getByLabelText('Toggle actions')
     await userEvent.click(btn)
     results = await axe(container)
+    // @ts-ignore
     expect(results).toHaveNoViolations()
   })
 

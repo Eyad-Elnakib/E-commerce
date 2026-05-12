@@ -214,11 +214,13 @@ describe('GiftFinderWizard', () => {
     const user = userEvent.setup()
     
     let results = await axe(container)
+    // @ts-ignore
     expect(results).toHaveNoViolations()
     
     await user.click(screen.getByLabelText('Mom')); await user.click(screen.getByRole('button', { name: 'Next' }))
     
     results = await axe(container)
+    // @ts-ignore
     expect(results).toHaveNoViolations()
   })
 

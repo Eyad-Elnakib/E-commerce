@@ -152,6 +152,7 @@ describe('Toast System', () => {
     })
     
     const results = await axe(container)
+    // @ts-ignore
     expect(results).toHaveNoViolations()
   })
 })
