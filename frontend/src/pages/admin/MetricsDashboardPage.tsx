@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { metricsApi } from '../../api/metrics'
 import type { MethodMetrics } from '../../api/metrics'
 import { useToast } from '../../components/ToastProvider'
@@ -13,7 +13,7 @@ export const MetricsDashboardPage: React.FC = () => {
   const queryClient = useQueryClient()
   const toast = useToast()
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['globalMetrics', excludeSynthetic],
     queryFn: () => metricsApi.getGlobalMetrics(!excludeSynthetic),
     retry: false

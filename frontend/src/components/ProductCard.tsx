@@ -56,13 +56,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     setFlipped(!flipped)
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      toggleFlip()
-    }
-  }
-
   const handleFavouriteClick = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()

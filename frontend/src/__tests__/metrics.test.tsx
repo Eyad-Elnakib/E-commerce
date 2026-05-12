@@ -220,7 +220,7 @@ describe('UserMetricsPage', () => {
 
   it('CSV export produces a blob', async () => {
     const createObjectURLMock = vi.fn()
-    global.URL.createObjectURL = createObjectURLMock
+    window.URL.createObjectURL = createObjectURLMock
     
     renderComponent()
     

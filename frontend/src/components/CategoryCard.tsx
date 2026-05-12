@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom'
 
 interface CategoryCardProps {
   category: string
-  image?: string
   className?: string
 }
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ category, image, className = '' }) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({ category, className = '' }) => {
   const isToyCategory = category === 'Toys & Games'
   const isMusicCategory = category === 'Music'
   const isClothingCategory = category === 'Clothing'

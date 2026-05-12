@@ -3,9 +3,7 @@ import { render, screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { ToastProvider, useToast } from '../components/ToastProvider'
-import React from 'react'
 
-expect.extend(toHaveNoViolations)
 
 const TestComponent = () => {
   const toast = useToast()
@@ -50,7 +48,7 @@ describe('Toast System', () => {
 
   it('Renders toasts and auto-dismisses after 5000ms', () => {
     renderWithProvider()
-    const user = userEvent.setup({ delay: null })
+    userEvent.setup({ delay: null })
     
     act(() => {
       screen.getByText('Add Success').click()

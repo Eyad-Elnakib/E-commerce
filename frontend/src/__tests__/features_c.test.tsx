@@ -1,5 +1,4 @@
-import React from 'react'
-import { render, screen, act, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -10,7 +9,6 @@ import { useAuthStore } from '../store/authStore'
 import { telemetry } from '../services/telemetry'
 
 // Spy on telemetry api
-import { telemetryApi } from '../api/telemetry'
 
 const renderWithProviders = (route = '/') => {
   window.history.pushState({}, 'Test page', route)
@@ -27,7 +25,7 @@ describe('Group C: Features (Favourites, Telemetry, Recommendations)', () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     useAuthStore.getState().setAuth('fake-jwt-token', {
-      id: 1, username: 'testuser', email: 't@t.com', full_name: 't', role: 'user', created_at: ''
+      id: 1, username: 'testuser', email: 't@t.com', full_name: 't', role: 'user', created_at: '', onboarding_completed: true
     })
     // @ts-ignore (private property access for testing reset)
     telemetry.buffer = []

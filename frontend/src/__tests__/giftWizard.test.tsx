@@ -7,7 +7,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { GiftPage } from '../pages/GiftPage'
 import { recommendationsApi } from '../api/telemetry'
 
-expect.extend(toHaveNoViolations)
 
 vi.mock('../api/telemetry', () => ({
   recommendationsApi: {

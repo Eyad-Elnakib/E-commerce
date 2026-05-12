@@ -1,7 +1,7 @@
 import React from 'react'
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { BrowserRouter, MemoryRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 import App from '../App'
@@ -38,7 +38,7 @@ describe('A1: User Registration', () => {
     const usernameInput = screen.getByLabelText(/Username/i)
     const emailInput = screen.getByLabelText(/Email/i)
     const passwordInput = screen.getByLabelText(/Password/i)
-    const submitBtn = screen.getByRole('button', { name: /Sign Up/i })
+    screen.getByRole('button', { name: /Sign Up/i })
 
     expect(fullNameInput).toBeInTheDocument()
     expect(usernameInput).toBeInTheDocument()
@@ -210,7 +210,7 @@ describe('A2: Login', () => {
 
   it('attaches token to subsequent API calls (MSW asserts)', async () => {
     useAuthStore.getState().setAuth('fake-jwt-token', {
-      id: 1, username: 'testuser', email: 'test@test.com', full_name: 'Test', role: 'user', created_at: ''
+      id: 1, username: 'testuser', email: 'test@test.com', full_name: 'Test', role: 'user', created_at: '', onboarding_completed: true
     })
 
     // Calling /api/auth/me directly with Axios instance
@@ -229,7 +229,7 @@ describe('A3: Logout', () => {
     
     // Setup authenticated state
     useAuthStore.getState().setAuth('fake-jwt-token', {
-      id: 1, username: 'testuser', email: 'test@test.com', full_name: 'Test', role: 'user', created_at: ''
+      id: 1, username: 'testuser', email: 'test@test.com', full_name: 'Test', role: 'user', created_at: '', onboarding_completed: true
     })
 
     renderWithProviders(<App />, '/feed')

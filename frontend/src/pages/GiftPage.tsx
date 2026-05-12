@@ -1,5 +1,5 @@
 import React, { useReducer, useEffect, useState, useRef } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { recommendationsApi } from '../api/telemetry'
 import type { RecommendationItem } from '../api/telemetry'
 import { ProductCard } from '../components/ProductCard'
@@ -70,7 +70,6 @@ const OPTIONS = {
 export const GiftPage: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [searchParams, setSearchParams] = useSearchParams()
-  const navigate = useNavigate()
   
   const [results, setResults] = useState<RecommendationItem[]>([])
   const [loading, setLoading] = useState(false)

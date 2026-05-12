@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ordersApi } from '../api/orders';
 import { useToast } from '../components/ToastProvider';
 import './CreditCardPage.css';
@@ -9,7 +9,6 @@ import { SpidermanError } from '../components/SpidermanError';
 export const CreditCardPage: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
-  const location = useLocation();
   const { track } = useTelemetry();
 
   const [cardNumber, setCardNumber] = useState('');

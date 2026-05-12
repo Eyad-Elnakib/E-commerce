@@ -1,5 +1,4 @@
-import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -22,7 +21,7 @@ const renderWithProviders = (route = '/') => {
 describe('Group C: Cart & Orders', () => {
   beforeEach(() => {
     useAuthStore.getState().setAuth('fake-jwt-token', {
-      id: 1, username: 'testuser', email: 't@t.com', full_name: 't', role: 'user', created_at: ''
+      id: 1, username: 'testuser', email: 't@t.com', full_name: 't', role: 'user', created_at: '', onboarding_completed: true
     })
     vi.clearAllMocks()
   })

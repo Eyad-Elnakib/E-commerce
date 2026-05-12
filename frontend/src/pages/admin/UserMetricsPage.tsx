@@ -301,7 +301,6 @@ export const UserMetricsPage: React.FC = () => {
                         {userStats.overlap_matrix.map(col => {
                           const val = row[col.method] ?? 0
                           const isDiagonal = row.method === col.method
-                          const intensity = Math.round(val * 255)
                           const bg = isDiagonal
                             ? 'var(--bg-tertiary)'
                             : `rgba(122, 30, 62, ${val * 0.6})`
