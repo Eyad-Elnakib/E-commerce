@@ -27,4 +27,9 @@ export const authApi = {
   logout: async (): Promise<void> => {
     await api.post('/auth/logout')
   },
+
+  completeOnboarding: async (data: { favourite_categories: string[], liked_product_ids: number[] }): Promise<UserData> => {
+    const response = await api.post('/auth/onboarding', data)
+    return response.data
+  },
 }

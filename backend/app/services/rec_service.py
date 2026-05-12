@@ -4,7 +4,7 @@ Called by routers/recommendations.py (function signatures unchanged).
 """
 from typing import Any
 from sqlalchemy.orm import Session
-from app.models import Product
+from app.models import Product, Rating
 from app.services.rec_engine import rec_engine
 
 
@@ -32,7 +32,23 @@ def get_grouped_feed_recommendations(user_id: int, limit: int, db: Session) -> l
             pids = rec_engine.get_recommendations_by_method(method_key, user_id, limit, db)
             
         if not pids and method_key != "popularity":
-            pids = rec_engine.popularity_baseline(limit)
+            # Smart Fallback for Cold-Start: Filter popularity by user's favorite categories
+            fav_cats = db.query(Product.category).join(Rating).filter(
+                Rating.user_id == user_id, Rating.value >= 4
+            ).distinct().all()
+            fav_cats = [c[0] for c in fav_cats if c[0]]
+            
+            if fav_cats:
+                # Get popular items in these categories
+                pids = db.query(Product.id).filter(
+                    Product.category.in_(fav_cats),
+                    Product.deleted_at == None
+                ).limit(limit).all()
+                pids = [p[0] for p in pids]
+            
+            # Final fallback to global popularity if still empty
+            if not pids:
+                pids = rec_engine.popularity_baseline(limit)
             
         all_pids_set.update(pids)
         method_results.append({

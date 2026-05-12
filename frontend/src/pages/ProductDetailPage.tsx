@@ -25,6 +25,8 @@ export const ProductDetailPage: React.FC = () => {
   const [isTogglingFav, setIsTogglingFav] = useState(false)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
   const [isRating, setIsRating] = useState(false)
+  const [similarProducts, setSimilarProducts] = useState<Product[]>([])
+  const [loadingSimilar, setLoadingSimilar] = useState(false)
 
   // Telemetry: Track view on mount if product exists
   useTrackView(product?.id)
@@ -46,6 +48,23 @@ export const ProductDetailPage: React.FC = () => {
       }
     }
     fetchProduct()
+  }, [id])
+
+  // Fetch similar products
+  useEffect(() => {
+    if (!id) return
+    const fetchSimilar = async () => {
+      setLoadingSimilar(true)
+      try {
+        const data = await productsApi.getSimilarProducts(id)
+        setSimilarProducts(data)
+      } catch {
+        setSimilarProducts([])
+      } finally {
+        setLoadingSimilar(false)
+      }
+    }
+    fetchSimilar()
   }, [id])
 
   const handleAddToCart = async () => {
@@ -108,7 +127,6 @@ export const ProductDetailPage: React.FC = () => {
     setIsRating(true)
     try {
       const res = await ratingsApi.addRating(product.id, ratingValue)
-      // Optimistically update
       setProduct({ 
         ...product, 
         user_rating: res.user_rating,
@@ -269,6 +287,49 @@ export const ProductDetailPage: React.FC = () => {
 
         </div>
       </div>
+
+      {/* ═══ You Might Also Like ═══ */}
+      {similarProducts.length > 0 && (
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-[var(--text-color)] mb-6 flex items-center gap-2">
+            <span>✨</span> You Might Also Like
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {similarProducts.map(sp => (
+              <button
+                key={sp.id}
+                onClick={() => navigate(`/product/${sp.id}`)}
+                className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] overflow-hidden text-left transition-all duration-200 hover:shadow-lg hover:scale-[1.03] hover:border-[var(--color-brand-maroon)]/40 group"
+              >
+                <div className="aspect-square bg-[var(--bg-tertiary)] flex items-center justify-center overflow-hidden">
+                  {sp.image_file ? (
+                    <img src={getImageSrc(sp.image_file)} alt={sp.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                  ) : (
+                    <span className="text-4xl opacity-30">📦</span>
+                  )}
+                </div>
+                <div className="p-3">
+                  <div className="font-medium text-sm text-[var(--text-color)] line-clamp-2 group-hover:text-[var(--color-brand-maroon)] transition-colors">
+                    {sp.name}
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="font-bold text-[var(--text-color)]">${sp.price.toFixed(2)}</span>
+                    {sp.avg_rating && (
+                      <span className="text-xs text-[var(--text-color-secondary)] flex items-center gap-0.5">
+                        <span className="text-yellow-500">★</span>{sp.avg_rating.toFixed(1)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {loadingSimilar && (
+        <div className="mt-12 text-center text-[var(--text-color-secondary)]">Loading similar products...</div>
+      )}
     </div>
   )
 }

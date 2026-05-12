@@ -45,5 +45,15 @@ export const productsApi = {
   getCategories: async (): Promise<string[]> => {
     const response = await api.get('/products/categories')
     return response.data
+  },
+
+  getSimilarProducts: async (productId: number | string): Promise<Product[]> => {
+    const response = await api.get(`/products/${productId}/similar`)
+    return response.data
+  },
+
+  getProductsByCategory: async (category: string, limit = 6): Promise<Product[]> => {
+    const response = await api.get('/products', { params: { category, page_size: limit } })
+    return response.data.data
   }
 }

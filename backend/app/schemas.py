@@ -45,9 +45,16 @@ class UserPublic(BaseModel):
     email: str
     full_name: str
     role: str
+    onboarding_completed: bool = False
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class OnboardingRequest(BaseModel):
+    """Request payload for the new-user onboarding quiz."""
+    favourite_categories: list[str] = Field(..., min_length=1, max_length=10)
+    liked_product_ids: list[int] = Field(default=[], max_length=20)
 
 
 class UsernameCheckResponse(BaseModel):

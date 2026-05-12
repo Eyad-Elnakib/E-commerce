@@ -11,6 +11,7 @@ export interface UserData {
   email: string
   full_name: string
   role: string
+  onboarding_completed: boolean
   created_at: string
 }
 
@@ -19,8 +20,10 @@ interface AuthState {
   user: UserData | null
   setAuth: (token: string, user: UserData) => void
   clearAuth: () => void
+  updateUser: (user: UserData) => void
   isAuthenticated: () => boolean
   isAdmin: () => boolean
+  needsOnboarding: () => boolean
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -37,9 +40,18 @@ export const useAuthStore = create<AuthState>()(
         set({ token: null, user: null })
       },
 
+      updateUser: (user: UserData) => {
+        set({ user })
+      },
+
       isAuthenticated: () => get().token !== null,
 
       isAdmin: () => get().user?.role === 'admin',
+
+      needsOnboarding: () => {
+        const user = get().user
+        return user !== null && !user.onboarding_completed && user.role !== 'admin'
+      },
     }),
     {
       name: 'auth-storage', // localStorage key

@@ -15,6 +15,7 @@ import { AdminSimulationPage } from './pages/admin/AdminSimulationPage'
 import { FavouritesPage } from './pages/FavouritesPage'
 import { LandingPage } from './pages/LandingPage'
 import { CreditCardPage } from './pages/CreditCardPage'
+import { OnboardingPage } from './pages/OnboardingPage'
 import { useAuthStore } from './store/authStore'
 import { useToast } from './components/ToastProvider'
 
@@ -71,6 +72,14 @@ function App() {
           <Route path="/browse" element={<BrowsePage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/gift" element={<GiftPage />} />
+          <Route 
+            path="/onboarding" 
+            element={
+              <ProtectedRoute>
+                <OnboardingPage />
+              </ProtectedRoute>
+            } 
+          />
           <Route 
             path="/feed" 
             element={

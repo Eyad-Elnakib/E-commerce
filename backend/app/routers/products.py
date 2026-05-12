@@ -123,3 +123,38 @@ def get_product(
         p_resp = annotate_product_with_user_state(p_resp, current_user.id, db)
 
     return p_resp
+
+
+@router.get("/{product_id}/similar", response_model=list[ProductResponse])
+def get_similar_products(
+    product_id: int,
+    limit: int = Query(8, ge=1, le=20),
+    db: Session = Depends(get_db),
+    current_user=Depends(get_optional_user)
+):
+    """Return similar products using the Item-Cosine Similarity Matrix."""
+    from app.services.rec_engine import rec_engine
+
+    similar_ids = rec_engine.similar_products(product_id, n=limit, db=db)
+
+    if not similar_ids:
+        return []
+
+    # Fetch products in order
+    products_map = {}
+    product_objs = db.query(Product).filter(
+        Product.id.in_(similar_ids),
+        Product.deleted_at == None
+    ).all()
+    for p in product_objs:
+        products_map[p.id] = p
+
+    result = []
+    for pid in similar_ids:
+        if pid in products_map:
+            p_resp = ProductResponse.model_validate(products_map[pid])
+            if current_user:
+                p_resp = annotate_product_with_user_state(p_resp, current_user.id, db)
+            result.append(p_resp)
+
+    return result

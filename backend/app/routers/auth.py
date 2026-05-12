@@ -11,7 +11,7 @@ from app.deps import get_db, get_current_user
 from app.models import User
 from app.schemas import (
     RegisterRequest, UserPublic, UsernameCheckResponse,
-    LoginRequest, LoginResponse,
+    LoginRequest, LoginResponse, OnboardingRequest,
 )
 from app.security import (
     hash_password, verify_password, create_access_token,
@@ -121,3 +121,68 @@ def logout():
     JWTs are stateless — logout is handled client-side by clearing the token.
     """
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/onboarding", response_model=UserPublic)
+def complete_onboarding(
+    req: OnboardingRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Save the new user's preferences to solve the Cold Start Problem.
+    Creates implicit 5-star ratings for liked products and 4-star ratings
+    for random products in their favourite categories.
+    """
+    from app.models import Rating, Favourite, Product
+    from sqlalchemy import func
+
+    # 1. Create ratings for explicitly liked products
+    for pid in req.liked_product_ids:
+        product = db.query(Product).filter(Product.id == pid, Product.deleted_at == None).first()
+        if not product:
+            continue
+        # Add as favourite
+        fav = Favourite(user_id=current_user.id, product_id=pid)
+        db.merge(fav)
+        # Add implicit 5-star rating
+        existing = db.query(Rating).filter(
+            Rating.user_id == current_user.id,
+            Rating.product_id == pid
+        ).first()
+        if not existing:
+            db.add(Rating(user_id=current_user.id, product_id=pid, value=5))
+
+    # 2. For favourite categories with no liked products, add implicit 4-star ratings
+    #    to 2 random products from each category so the engine has data to work with
+    liked_set = set(req.liked_product_ids)
+    for cat in req.favourite_categories:
+        # Get up to 2 random products from this category that weren't already liked
+        cat_products = (
+            db.query(Product)
+            .filter(Product.category == cat, Product.deleted_at == None, ~Product.id.in_(liked_set))
+            .order_by(func.random())
+            .limit(2)
+            .all()
+        )
+        for p in cat_products:
+            existing = db.query(Rating).filter(
+                Rating.user_id == current_user.id,
+                Rating.product_id == p.id
+            ).first()
+            if not existing:
+                db.add(Rating(user_id=current_user.id, product_id=p.id, value=4))
+
+    # 3. Mark onboarding as completed
+    current_user.onboarding_completed = True
+    db.commit()
+    db.refresh(current_user)
+
+    # 4. Invalidate recommendation engine + feed cache so the user gets
+    #    personalized results immediately on their first feed visit
+    from app.services.rec_engine import rec_engine
+    from app.cache import cache
+    rec_engine.invalidate()
+    cache.invalidate_prefix(f"rec:user:{current_user.id}")
+
+    return current_user

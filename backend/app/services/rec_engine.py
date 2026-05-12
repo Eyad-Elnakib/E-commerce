@@ -405,6 +405,27 @@ class RecommendationEngine:
         scored.sort(key=lambda x: x[1], reverse=True)
         return [pid for pid, _ in scored[:n]]
 
+    def similar_products(self, product_id: int, n: int = 8, db: Session = None) -> list[int]:
+        """Find the most similar products using the Item-Cosine Similarity Matrix."""
+        if db:
+            self._ensure_fitted(db)
+
+        pi = self._product_idx.get(product_id)
+        if pi is None:
+            return []
+
+        sims = self._item_sim_cosine[pi]
+        # Get top N+1 indices (excluding self)
+        top_indices = np.argsort(sims)[::-1]
+        result = []
+        for idx in top_indices:
+            if len(result) >= n:
+                break
+            pid = self._product_ids[idx]
+            if pid != product_id:
+                result.append(pid)
+        return result
+
     def popularity_baseline(self, n: int = 10, exclude_ids: set = None) -> list[int]:
         """Popularity-based fallback for cold-start users."""
         exclude = exclude_ids or set()
@@ -415,22 +436,18 @@ class RecommendationEngine:
     def hybrid_feed(self, user_id: int, limit: int, db: Session) -> list[int]:
         """
         Hybrid recommendation combining CF and CB methods.
-        Cold-start users get popularity baseline.
+        Enhanced for onboarding: users with even 1 rating get personalized results.
         """
         self._ensure_fitted(db)
 
         ui = self._user_idx.get(user_id)
 
-        # Cold start: fewer than 3 ratings
+        # Extreme Cold Start: No ratings at all
         if ui is None:
-            logger.info(f"Cold start for user {user_id} — using popularity baseline")
             return self.popularity_baseline(limit)
 
         n_ratings = np.sum(self._rating_matrix[ui] > 0)
-        if n_ratings < 3:
-            logger.info(f"Cold start for user {user_id} ({n_ratings} ratings) — using popularity baseline")
-            return self.popularity_baseline(limit)
-
+        
         # Get recommendations from each method
         cf_results = {
             "user_knn": self.user_based_knn(user_id, limit * 3),
@@ -443,17 +460,42 @@ class RecommendationEngine:
         # Score aggregation: each method votes for products
         product_scores: dict[int, float] = {}
 
-        # CF scores (0.7 weight total, split across 4 methods)
-        cf_weight_per_method = 0.7 / 4
-        for method_results in cf_results.values():
-            for rank, pid in enumerate(method_results):
-                score = 1.0 / (rank + 1)  # reciprocal rank
-                product_scores[pid] = product_scores.get(pid, 0) + score * cf_weight_per_method
+        # CF weight: if user has few ratings, CF is less reliable (0.2), if many ratings, CF is more reliable (0.7)
+        cf_total_weight = 0.7 if n_ratings >= 5 else (0.2 if n_ratings > 0 else 0.0)
+        cb_total_weight = 1.0 - cf_total_weight
 
-        # CB score (0.3 weight)
+        # CF scores
+        if cf_total_weight > 0:
+            cf_weight_per_method = cf_total_weight / 4
+            for method_results in cf_results.values():
+                for rank, pid in enumerate(method_results):
+                    score = 1.0 / (rank + 1)
+                    product_scores[pid] = product_scores.get(pid, 0) + score * cf_weight_per_method
+
+        # CB scores (Content-based is very reliable for new users)
         for rank, pid in enumerate(cb_results):
             score = 1.0 / (rank + 1)
-            product_scores[pid] = product_scores.get(pid, 0) + score * 0.3
+            product_scores[pid] = product_scores.get(pid, 0) + score * cb_total_weight
+
+        # ─── Category Boost ───
+        # Boost products that belong to the user's favorite categories (from onboarding)
+        # We find their highly rated categories
+        user_ratings = self._rating_matrix[ui]
+        fav_categories = set()
+        for i, r in enumerate(user_ratings):
+            if r >= 4:
+                p_id = self._product_ids[i]
+                # Find product category in product_data
+                p_info = next((p for p in self._product_data if p["id"] == p_id), None)
+                if p_info and p_info.get("category"):
+                    fav_categories.add(p_info["category"])
+
+        if fav_categories:
+            for i, p in enumerate(self._product_data):
+                if p["category"] in fav_categories:
+                    # Give a flat boost to anything in their favorite category
+                    pid = p["id"]
+                    product_scores[pid] = product_scores.get(pid, 0) + 0.5
 
         # Sort by aggregate score
         sorted_products = sorted(product_scores.items(), key=lambda x: x[1], reverse=True)

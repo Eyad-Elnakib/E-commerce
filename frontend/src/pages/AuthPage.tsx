@@ -103,7 +103,14 @@ export const AuthPage: React.FC = () => {
 
   // Username check
   useEffect(() => {
-    if (isLogin || !usernameValue || errors.username) {
+    // Clear status immediately when typing or switching modes
+    if (isLogin || !usernameValue) {
+      setUsernameStatus('idle')
+      return
+    }
+
+    // If there's already a validation error (regex, length), don't check API
+    if (errors.username) {
       setUsernameStatus('idle')
       return
     }
@@ -112,14 +119,15 @@ export const AuthPage: React.FC = () => {
     const timer = setTimeout(async () => {
       try {
         const { available } = await authApi.checkUsername(usernameValue)
+        // Verify value hasn't changed since request started
         setUsernameStatus(available ? 'available' : 'taken')
       } catch (err) {
         setUsernameStatus('idle')
       }
-    }, 300)
+    }, 400) // Slightly longer debounce for reliability
 
     return () => clearTimeout(timer)
-  }, [usernameValue, errors.username, isLogin])
+  }, [usernameValue, isLogin, !!errors.username])
 
   // Password strength check
   useEffect(() => {
@@ -144,8 +152,14 @@ export const AuthPage: React.FC = () => {
         const res = await authApi.login(data)
         setAuth(res.access_token, res.user)
         const searchParams = new URLSearchParams(location.search)
-        const redirectUrl = searchParams.get('redirect') || '/feed'
-        navigate(redirectUrl)
+        const redirectUrl = searchParams.get('redirect')
+        if (redirectUrl) {
+          navigate(redirectUrl)
+        } else if (!res.user.onboarding_completed && res.user.role !== 'admin') {
+          navigate('/onboarding')
+        } else {
+          navigate('/feed')
+        }
       } catch (err: any) {
         if (err.response?.status === 401) {
           setErrorMsg('Incorrect username or password.')

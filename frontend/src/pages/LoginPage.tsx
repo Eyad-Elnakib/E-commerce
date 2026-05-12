@@ -37,10 +37,16 @@ export const LoginPage: React.FC = () => {
       const res = await authApi.login(data)
       setAuth(res.access_token, res.user)
       
-      // Navigate to redirect param or feed
+      // Navigate to redirect param, onboarding for new users, or feed
       const searchParams = new URLSearchParams(location.search)
-      const redirectUrl = searchParams.get('redirect') || '/feed'
-      navigate(redirectUrl)
+      const redirectUrl = searchParams.get('redirect')
+      if (redirectUrl) {
+        navigate(redirectUrl)
+      } else if (!res.user.onboarding_completed && res.user.role !== 'admin') {
+        navigate('/onboarding')
+      } else {
+        navigate('/feed')
+      }
     } catch (err: any) {
       if (err.response?.status === 401) {
         // 401: Keep password value but show generic error
