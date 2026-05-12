@@ -47,29 +47,6 @@ app = FastAPI(
     description="University project — localhost scope only",
 )
 
-# ── CORS ────────────────────────────────────────────────
-import os
-from fastapi.middleware.cors import CORSMiddleware
-
-origins = [
-    "http://localhost:5173",           # local dev
-    "http://localhost:3000",           # alternate local dev
-]
-
-# In production, add your Vercel URL
-vercel_url = os.getenv("FRONTEND_URL")
-if vercel_url:
-    origins.append(vercel_url)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-# ────────────────────────────────────────────────────────
-
 # Mount static files for product images
 data_dir = Path(__file__).parent.parent / "data"
 data_dir.mkdir(parents=True, exist_ok=True)
